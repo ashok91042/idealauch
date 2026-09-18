@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IDEALAUNCH - Discover startup ideas and build the future.">
+  <title>IDEALAUNCH | Sign In / Sign Up</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <div class="auth-bg" aria-hidden="true"><span class="orb orb-1"></span><span class="orb orb-2"></span><span class="orb orb-3"></span></div>
+  <header class="auth-topnav">
+    <a class="brand" href="index.html">🚀 IDEA<span>LAUNCH</span></a>
+  </header>
+  <main class="auth-layout">
+    <section class="hero-panel" aria-labelledby="hero-title">
+      <p class="eyebrow pulse">● DISCOVER • BUILD • LAUNCH</p>
+      <h1 id="hero-title">Big Ideas<br>Start <span class="grad-text">Here.</span></h1>
+      <p class="hero-sub">Join a community of innovators and explore startup ideas that can change the world.</p>
+      <ul class="feature-list">
+        <li><span class="feat-ico">💡</span><div><strong>Explore Ideas</strong><small>Discover thousands of startup ideas</small></div></li>
+        <li><span class="feat-ico">🤝</span><div><strong>Connect</strong><small>With like-minded people</small></div></li>
+        <li><span class="feat-ico">🚀</span><div><strong>Build</strong><small>Turn ideas into reality</small></div></li>
+      </ul>
+      <div class="hero-stats">
+        <div><strong>8+</strong><span>Curated ideas</span></div>
+        <div><strong>10+</strong><span>Categories</span></div>
+        <div><strong>100%</strong><span>Free forever</span></div>
+      </div>
+    </section>
+
+    <section class="auth-card" aria-labelledby="auth-title">
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-tab="signin" role="tab" type="button">Sign In</button>
+        <button class="auth-tab" data-tab="signup" role="tab" type="button">Sign Up</button>
+        <span class="tab-glider" aria-hidden="true"></span>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="panel-signin">
+        <h2 id="auth-title">Welcome Back 👋</h2>
+        <p class="muted">Sign in to continue your journey.</p>
+        <form id="loginForm" novalidate>
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+          <small class="error" id="emailError"></small>
+          <label for="password">Password</label>
+          <div class="pass-wrap">
+            <input id="password" name="password" type="password" placeholder="Minimum 6 characters" autocomplete="current-password" required minlength="6">
+            <button type="button" class="pass-toggle" data-toggle-pass="password" aria-label="Show password">👁</button>
+          </div>
+          <small class="error" id="passwordError"></small>
+          <div class="auth-row">
+            <label class="check"><input type="checkbox" id="rememberMe" checked> Remember me</label>
+            <a href="#" class="link" id="forgotLink">Forgot password?</a>
+          </div>
+          <button class="btn primary full btn-glow" type="submit">Sign In →</button>
+          <div class="divider"><span>or</span></div>
+          <button class="btn outline full" type="button" id="guestBtn">⚡ Continue as Guest</button>
+          <p class="switch-line">Don't have an account? <a href="#" class="link" data-goto="signup">Sign up</a></p>
+        </form>
+      </div>
+
+      <!-- SIGN UP -->
+      <div id="panel-signup" hidden>
+        <h2>Create Account 🚀</h2>
+        <p class="muted">Join IDEALAUNCH in 30 seconds.</p>
+        <form id="signupForm" novalidate>
+          <label for="su-name">Full name</label>
+          <input id="su-name" type="text" placeholder="e.g. Ashok Kumar" autocomplete="name" required>
+          <small class="error" id="suNameError"></small>
+          <label for="su-email">Email address</label>
+          <input id="su-email" type="email" placeholder="you@example.com" autocomplete="email" required>
+          <small class="error" id="suEmailError"></small>
+          <label for="su-password">Password</label>
+          <div class="pass-wrap">
+            <input id="su-password" type="password" placeholder="Min. 6 characters" autocomplete="new-password" required minlength="6">
+            <button type="button" class="pass-toggle" data-toggle-pass="su-password" aria-label="Show password">👁</button>
+          </div>
+          <div class="strength"><span id="strengthBar"></span></div>
+          <small class="error" id="suPassError"></small>
+          <label for="su-confirm">Confirm password</label>
+          <input id="su-confirm" type="password" placeholder="Repeat your password" autocomplete="new-password" required>
+          <small class="error" id="suConfirmError"></small>
+          <button class="btn primary full btn-glow" type="submit">Create Account →</button>
+          <p class="switch-line">Already have an account? <a href="#" class="link" data-goto="signin">Sign in</a></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <p class="auth-foot">“Ideas today. A better tomorrow.” ✨</p>
+  <script src="js/app.js"></script>
+</body>
+</html>

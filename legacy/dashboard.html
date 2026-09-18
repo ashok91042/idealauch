@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="IDEALAUNCH dashboard"><title>IDEALAUNCH | Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-protected>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="dashboard.html">🚀 IDEA<span>LAUNCH</span></a>
+    <nav aria-label="Main navigation">
+      <a class="active" href="dashboard.html">⌂ Dashboard</a>
+      <a href="explore.html">⌕ Explore Ideas</a>
+      <a href="saved.html">♡ Saved Ideas</a>
+      <a href="profile.html">♙ Profile</a>
+      <a href="#" data-new-idea style="border:1px dashed #ff3038;color:#ff6b71">＋ New Idea</a>
+      <button class="logout" data-logout>↪ Logout</button>
+    </nav>
+  </aside>
+  <div class="content">
+    <header class="topbar">
+      <form class="search-mini" action="explore.html"><input name="q" aria-label="Search ideas" placeholder="Search ideas, categories..."><button>⌕</button></form>
+      <span class="user-chip">● <span data-user-name>Innovator</span></span>
+    </header>
+    <main>
+      <section class="page-heading"><p class="eyebrow">YOUR COMMAND CENTER</p><h1>Hello, <span data-user-name>Innovator</span> 👋</h1><p>Ready to explore new opportunities?</p><div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn primary" data-new-idea>＋ New Idea</button><a class="btn outline" href="explore.html">Explore Ideas →</a></div></section>
+      <section class="stats-grid" aria-label="Platform statistics">
+        <article class="stat"><strong>120</strong><span>Startup Ideas</span></article>
+        <article class="stat"><strong id="savedCount">0</strong><span>Saved Ideas</span></article>
+        <article class="stat"><strong>10</strong><span>Categories</span></article>
+        <article class="stat"><strong>1</strong><span>Active Session</span></article>
+      </section>
+      <section class="hero-card">
+        <div><p class="eyebrow">IDEAS TODAY</p><h2>Small Ideas Can Create <span>Big Change.</span></h2><p>Discover. Save. Build.</p><a class="btn primary" href="explore.html">Explore Ideas →</a></div>
+        <div class="rocket-art" aria-hidden="true">🚀</div>
+      </section>
+      <section>
+        <div class="section-title"><h2>Popular Categories</h2><a href="explore.html">View all</a></div>
+        <div class="category-grid">
+          <a href="explore.html?category=AI%20%26%20ML">🤖 AI & ML</a><a href="explore.html?category=FinTech">💳 FinTech</a>
+          <a href="explore.html?category=HealthTech">❤️ HealthTech</a><a href="explore.html?category=EdTech">📚 EdTech</a>
+          <a href="explore.html?category=Green Tech">🌱 Green Tech</a><a href="explore.html?category=E-commerce">🛒 E-commerce</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

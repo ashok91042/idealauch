@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html { scroll-behavior: smooth; }
+body { @apply bg-ink text-neutral-100 antialiased; font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-[10px] px-5 py-3 font-extrabold transition-all duration-300 cursor-pointer border-0; }
+  .btn-primary { @apply bg-brand text-white shadow-glow hover:-translate-y-0.5 hover:bg-brand-light hover:shadow-[0_12px_34px_rgba(255,48,56,.5)]; }
+  .btn-outline { @apply bg-transparent border border-brand text-brand-light hover:-translate-y-0.5 hover:bg-brand/10; }
+  .btn-full { @apply w-full; }
+  .card { @apply bg-ink-card border border-ink-line rounded-2xl transition-all duration-300; }
+  .input { @apply w-full bg-[#15171a] border border-[#35383d] text-white rounded-[10px] px-3.5 py-3 outline-none transition-all placeholder:text-neutral-500 hover:border-brand/40 focus:border-brand focus:ring-[3px] focus:ring-brand/20; }
+  .label { @apply block mt-5 mb-1.5 font-bold text-sm; }
+  .error { @apply block text-[#ff646b] min-h-[18px] text-sm; }
+  .tag { @apply inline-block text-brand-light bg-[#3a1115] px-2.5 py-1 rounded-full text-xs font-bold; }
+  .link { @apply text-brand-light font-bold hover:underline hover:text-[#ff8085]; }
+  .eyebrow { @apply text-xs font-extrabold tracking-[2px] text-brand-light; }
+  .grad-text { @apply bg-gradient-to-r from-brand to-[#ff8a5b] bg-clip-text text-transparent; }
+}
