@@ -77,7 +77,7 @@ Tables: `users` (id, name, email, pass_hash), `ideas` (title, category, icon, de
 |---|---|---|---|
 | GET | `/api/health` | — | health check |
 | POST | `/api/auth/signup` | — | register (bcrypt-hashed password) → JWT + user |
-| POST | `/api/auth/signin` | — | login (unknown email auto-registers, like the old demo flow) |
+| POST | `/api/auth/signin` | — | login (account must exist - sign up first) |
 | GET | `/api/auth/me` | ✅ | current user from token |
 | PUT | `/api/auth/profile` | ✅ | update name / email |
 | GET | `/api/ideas?q=&category=&sort=` | — | list, search, filter, sort ideas |
@@ -110,7 +110,7 @@ npm run smoke   # 18-request end-to-end test against http://localhost:5000
 ```bash
 npm install
 npm run dev
-```.
+```
 Open http://localhost:3000
 
 ## Build
@@ -118,4 +118,3 @@ Open http://localhost:3000
 npm run build
 npm start
 ```
-

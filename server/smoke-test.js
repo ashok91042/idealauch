@@ -42,15 +42,15 @@ async function main() {
     body: JSON.stringify({ email, password: "secret123" }),
   });
   d = await r.json();
-  ok("signin correct", r.status === 200 && !!d.token && !d.autoRegistered);
+  ok("signin correct", r.status === 200 && !!d.token);
 
-  // 6. signin unknown email -> auto-register
+  // 6. signin unknown email -> rejected (must sign up first)
   r = await fetch(`${BASE}/auth/signin`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: `auto${Date.now()}@demo.io`, password: "secret123" }),
   });
   d = await r.json();
-  ok("signin unknown -> auto-register", r.status === 200 && d.autoRegistered === true);
+  ok("signin unknown -> 401 (sign up first)", r.status === 401 && !d.token);
 
   // 7. list ideas (seeded)
   r = await fetch(`${BASE}/ideas`);

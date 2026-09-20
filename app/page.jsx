@@ -38,7 +38,9 @@ export default function LoginPage() {
       }
       showToast("Welcome back!");
     } catch (err) {
-      if (err.status === 401) setErrs({ pass: err.message || "Wrong password." });
+      if (err.status === 401 && /account not found/i.test(err.message || ""))
+        setErrs({ email: err.message || "Account not found. Sign up first." });
+      else if (err.status === 401) setErrs({ pass: err.message || "Wrong password." });
       else setErrs({ email: err.message || "Could not sign in. Is the API running?" });
     }
   };

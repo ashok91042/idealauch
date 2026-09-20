@@ -2,6 +2,8 @@
 // Auto-creates schema and seeds starter ideas on first run.
 require("dotenv").config({ path: require("path").join(__dirname, ".env" ) });
 const { Pool } = require("pg");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -9,9 +11,22 @@ if (!connectionString) {
   process.exit(1);
 }
 
+/*
+ * TLS: the Supabase pooler presents a self-signed certificate chain, so full
+ * verification only works when its CA is provided. Set DATABASE_SSL_CA (PEM)
+ * to verify the certificate; otherwise keep the encrypted connection with
+ * relaxed verification (Supabase's documented pooler setup).
+ */
+const ssl = process.env.DATABASE_SSL_CA
+  ? { rejectUnauthorized: true, ca: process.env.DATABASE_SSL_CA.replace(/\\n/g, "\n") }
+  : { rejectUnauthorized: false };
+
 const pool = new Pool({
   connectionString,
-  ssl: { rejectUnauthorized: false },
+  ssl,
+  max: Number(process.env.PGPOOL_MAX) || 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 15000,
 });
 
 const SEED_IDEAS = [
@@ -58,27 +73,45 @@ async function initDb() {
     );
   `);
 
-  // Seed system user + starter ideas once
-  const { rows } = await pool.query("SELECT COUNT(*)::int AS n FROM ideas");
-  if (rows[0].n === 0) {
-    const u = await pool.query(
-      `INSERT INTO users (name, email, pass_hash) VALUES ($1,$2,$3)
-       ON CONFLICT (email) DO NOTHING RETURNING id`,
-      ["IDEALAUNCH", SYSTEM_EMAIL, "seed-no-login"]
+  // Defense-in-depth: the display-only seed account must never be sign-in-able.
+  // If its hash isn't a bcrypt hash (e.g. seeded as a plaintext), replace it with
+  // an unguessable one.
+  const su = await pool.query("SELECT id, pass_hash FROM users WHERE email=$1", [SYSTEM_EMAIL]);
+  if (su.rows.length && !String(su.rows[0].pass_hash).startsWith("$2")) {
+    await pool.query(
+      "UPDATE users SET pass_hash=$1 WHERE id=$2",
+      [bcrypt.hashSync(crypto.randomBytes(48).toString("hex"), 10), su.rows[0].id]
     );
-    let sysId = u.rows[0]?.id;
-    if (!sysId) {
-      const ex = await pool.query("SELECT id FROM users WHERE email=$1", [SYSTEM_EMAIL]);
-      sysId = ex.rows[0].id;
-    }
-    for (const [title, category, icon, likes, description, problem, solution, features] of SEED_IDEAS) {
-      await pool.query(
-        `INSERT INTO ideas (title, category, icon, likes, description, problem, solution, features, author, author_email, author_id)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
-        [title, category, icon, likes, description, problem, solution, JSON.stringify(features), "IDEALAUNCH", SYSTEM_EMAIL, sysId]
+    console.log("Hardened seed account password.");
+  }
+
+  // Seed system user + starter ideas once (advisory lock prevents double-seeding
+  // when two instances boot at the same time)
+  await pool.query("SELECT pg_advisory_lock(918273645)");
+  try {
+    const { rows } = await pool.query("SELECT COUNT(*)::int AS n FROM ideas");
+    if (rows[0].n === 0) {
+      const u = await pool.query(
+        `INSERT INTO users (name, email, pass_hash) VALUES ($1,$2,$3)
+         ON CONFLICT (email) DO NOTHING RETURNING id`,
+        ["IDEALAUNCH", SYSTEM_EMAIL, bcrypt.hashSync(crypto.randomBytes(48).toString("hex"), 10)]
       );
+      let sysId = u.rows[0]?.id;
+      if (!sysId) {
+        const ex = await pool.query("SELECT id FROM users WHERE email=$1", [SYSTEM_EMAIL]);
+        sysId = ex.rows[0].id;
+      }
+      for (const [title, category, icon, likes, description, problem, solution, features] of SEED_IDEAS) {
+        await pool.query(
+          `INSERT INTO ideas (title, category, icon, likes, description, problem, solution, features, author, author_email, author_id)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+          [title, category, icon, likes, description, problem, solution, JSON.stringify(features), "IDEALAUNCH", SYSTEM_EMAIL, sysId]
+        );
+      }
+      console.log(`Seeded ${SEED_IDEAS.length} starter ideas.`);
     }
-    console.log(`Seeded ${SEED_IDEAS.length} starter ideas.`);
+  } finally {
+    await pool.query("SELECT pg_advisory_unlock(918273645)");
   }
 }
 

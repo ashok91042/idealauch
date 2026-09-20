@@ -6,8 +6,8 @@ const { pool } = require("./db");
   console.log("ideas:", await q("SELECT COUNT(*)::int AS n FROM ideas"));
   console.log("saved:", await q("SELECT COUNT(*)::int AS n FROM saved_ideas"));
   const del = await pool.query(
-    "DELETE FROM users WHERE email LIKE $1 OR email LIKE $2 OR email = $3 RETURNING email",
-    ["smoke%", "auto%", "testrunner@demo.io"]
+    "DELETE FROM users WHERE email LIKE $1 OR email LIKE $2 OR email LIKE $3 OR email = $4 RETURNING email",
+    ["smoke%", "auto%", "probe%", "testrunner@demo.io"]
   );
   console.log("cleaned test users:", del.rows.length);
   await pool.end();

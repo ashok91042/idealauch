@@ -44,6 +44,11 @@ export function AppProvider({ children }) {
     if (!API_FORCED_OFF) {
       api("/health").then(async () => {
         setBackend(true);
+        // Backend is authoritative: drop anonymous/local-only data so
+        // everything shown matches the database.
+        try { localStorage.removeItem("ideaSaved"); } catch {}
+        try { localStorage.removeItem("ideaCustom"); } catch {}
+        setSaved([]);
         try {
           const { ideas } = await api("/ideas?sort=title");
           setServerIdeas(ideas);
@@ -105,6 +110,9 @@ export function AppProvider({ children }) {
       const { ideas } = await api("/ideas?sort=title");
       setServerIdeas(ideas);
     } catch {}
+    // Signed in: the database is the single source of truth now.
+    try { localStorage.removeItem("ideaSaved"); } catch {}
+    try { localStorage.removeItem("ideaCustom"); } catch {}
     return data;
   };
   const signupBackend = async (name, email, password) => {
@@ -112,6 +120,19 @@ export function AppProvider({ children }) {
     setToken(data.token);
     setUser(data.user);
     try { sessionStorage.setItem("ideaUser", JSON.stringify(data.user)); } catch {}
+    // Fresh account: sync everything from the database (new users have an
+    // empty saved list) and drop stale anonymous/local-only data.
+    try {
+      const { ids } = await api("/saved");
+      setServerSaved(ids);
+      setSaved(ids);
+    } catch {}
+    try {
+      const { ideas } = await api("/ideas?sort=title");
+      setServerIdeas(ideas);
+    } catch {}
+    try { localStorage.removeItem("ideaSaved"); } catch {}
+    try { localStorage.removeItem("ideaCustom"); } catch {}
     return data;
   };
   const updateProfileBackend = async (name, email) => {
@@ -137,6 +158,7 @@ export function AppProvider({ children }) {
   };
 
   const addIdea = async (idea) => {
+    if (backend && !user) throw new Error("Sign up first to publish your idea.");
     if (backend && user) {
       const { idea: created } = await api("/ideas", { method: "POST", body: idea });
       setServerIdeas((prev) => (prev ? [created, ...prev] : prev));
@@ -166,6 +188,7 @@ export function AppProvider({ children }) {
   };
 
   const toggleSave = async (id, forceRemove = false) => {
+    if (backend && !user) throw new Error("Sign up first to save ideas.");
     if (backend && user) {
       if (forceRemove) {
         const ids = (serverSaved ?? saved).map(String);
